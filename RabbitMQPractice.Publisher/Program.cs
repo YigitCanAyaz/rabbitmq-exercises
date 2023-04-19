@@ -11,18 +11,22 @@ using var connection = factory.CreateConnection();
 
 var channel = connection.CreateModel();
 
-// creatin queue
+// creating queue
 channel.QueueDeclare("hello-queue", true, false, false);
 
-string message = "hello world";
+Enumerable.Range(1, 50).ToList().ForEach(x =>
+{
+    string message = $"Message {x}";
 
-// converting to byte because rabbitmq only takes byte as an input
-var messageBody = Encoding.UTF8.GetBytes(message);
+    // converting to byte because rabbitmq only takes byte as an input
+    var messageBody = Encoding.UTF8.GetBytes(message);
 
-// string.Empty bcs we r not using exchange yet
-// hello-queue => routingKey
-channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+    // string.Empty bcs we r not using exchange yet
+    // hello-queue => routingKey
+    channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
 
-Console.WriteLine("Mesaj gönderilmiştir");
+    Console.WriteLine($"Message sended : {message}");
+});
+
 
 Console.ReadLine();
